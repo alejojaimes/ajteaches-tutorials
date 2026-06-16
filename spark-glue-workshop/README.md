@@ -20,11 +20,19 @@ construido con AWS Glue Studio, Step Functions y Athena.
 - Con el job en Succeeded y las particiones por año visibles en silver/, se evidencia que la limpieza y el tipado funcionaron correctamente.
 
 ### Step 6 — Job Silver → Gold completado (modelo estrella)
-![Job Silver a Gold con estado Succeeded](evidence/step_6_glue_gold_succeeded_1.png)
-![Job Silver a Gold con estado Succeeded](evidence/step_6_glue_gold_succeeded_2.png)
+![Job Silver a Gold con estado Succeeded](static/step_6_glue_gold_succeeded_1.png)
+![Job Silver a Gold con estado Succeeded](static/step_6_glue_gold_succeeded_2.png)
 - Con las cuatro tablas escritas en gold/, se evidencia que el modelo estrella quedó construido y listo para consultarse.
 
 ### Paso 7 — Orquestación con Step Functions
-![Pipeline orquestado con ambos estados completados](evidence/step_7_step_functions_1.png)
-![Pipeline orquestado con ambos estados completados](evidence/step_7_step_functions_2.png)
+![Pipeline orquestado con ambos estados completados](static/step_7_step_functions_1.png)
+![Pipeline orquestado con ambos estados completados](static/step_7_step_functions_2.png)
 - Con ambos estados en verde, se evidencia que el pipeline completo corre de forma orquestada, sin intervención manual entre un job y el otro.
+- 
+### Paso 8 — Consultas analíticas en Athena
+![Consulta de negocio ejecutada sobre el modelo Gold](static/step_8_athena_queries_p1.png)
+![Consulta de negocio ejecutada sobre el modelo Gold](static/step_8_athena_queries_p2.png)
+![Consulta de negocio ejecutada sobre el modelo Gold](static/step_8_athena_queries_p3.png)
+![Consulta de negocio ejecutada sobre el modelo Gold](static/step_8_athena_queries_p4.png)
+
+- Con las consultas devolviendo resultados, se evidencia que el modelo Gold responde correctamente las preguntas de negocio planteadas.
