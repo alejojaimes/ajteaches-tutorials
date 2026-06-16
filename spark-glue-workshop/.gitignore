@@ -1,0 +1,11 @@
+# Entorno virtual
+venv/
+
+# Dataset (se descarga y se genera localmente, no se versiona)
+data/*.zip
+data/*.xlsx
+data/*.csv
+
+# Cache de Python
+__pycache__/
+*.pyc
