@@ -58,8 +58,7 @@ Cada taller documenta sus propios requisitos previos (cuentas de servicios cloud
 
 ## Sobre ajteaches
 
-Soy un ingeniero que enseña. En [ajteaches.dev](https://www.ajteaches.dev) publico el contenido explicativo: el contexto, la teoría y el paso a paso comentado de cada taller. Aquí en GitHub vive el material de trabajo: código, datos y evidencia.
-
+Soy un ingeniero que enseña. Publico el contenido explicativo: el contexto, la teoría y el paso a paso comentado de cada taller. Pero te lo cuento mejor en [ajteaches.dev](https://www.ajteaches.dev/u/ajteaches)
 ---
 
 ## Licencia
