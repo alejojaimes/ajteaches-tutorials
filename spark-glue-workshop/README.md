@@ -18,3 +18,7 @@ construido con AWS Glue Studio, Step Functions y Athena.
 ![Job Bronze a Silver con estado Succeeded](static/step_5_glue_silver_succeeded_1.png)
 ![Job Bronze a Silver con estado Succeeded](static/step_5_glue_silver_succeeded_2.png)
 - Con el job en Succeeded y las particiones por año visibles en silver/, se evidencia que la limpieza y el tipado funcionaron correctamente.
+
+### Step 6 — Job Silver → Gold completado (modelo estrella)
+![Job Silver a Gold con estado Succeeded](evidence/step_6_glue_gold_succeeded_1.png)
+- Con las cuatro tablas escritas en gold/, se evidencia que el modelo estrella quedó construido y listo para consultarse.
