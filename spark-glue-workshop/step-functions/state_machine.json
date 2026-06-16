@@ -1,0 +1,42 @@
+{
+    "Comment": "Orquesta el pipeline Bronze -> Silver -> Gold del Spark / AWS Glue Workshop",
+    "StartAt": "BronzeToSilver",
+    "States": {
+        "BronzeToSilver": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::glue:startJobRun.sync",
+            "Parameters": {
+                "JobName": "spark-glue-workshop-bronze-to-silver"
+            },
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Next": "PipelineFailed"
+                }
+            ],
+            "Next": "SilverToGold"
+        },
+        "SilverToGold": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::glue:startJobRun.sync",
+            "Parameters": {
+                "JobName": "spark-glue-workshop-silver-to-gold",
+                "Arguments": {
+                    "--BUCKET": "taller-spark-glue-datalake-032"
+                }
+            },
+            "Catch": [
+                {
+                    "ErrorEquals": ["States.ALL"],
+                    "Next": "PipelineFailed"
+                }
+            ],
+            "End": true
+        },
+        "PipelineFailed": {
+            "Type": "Fail",
+            "Error": "PipelineExecutionFailed",
+            "Cause": "Uno de los jobs de Glue fallo. Revisar CloudWatch Logs (/aws-glue/jobs/logs-v2) para el detalle."
+        }
+    }
+}

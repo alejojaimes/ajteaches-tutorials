@@ -16,9 +16,15 @@ construido con AWS Glue Studio, Step Functions y Athena.
 
 ### Step 5 — Job Bronze → Silver completado
 ![Job Bronze a Silver con estado Succeeded](static/step_5_glue_silver_succeeded_1.png)
-![Job Bronze a Silver con estado Succeeded](static/step_5_glue_silver_succeeded_2.png)
+![Job Bronze a Silver con estado Succeeded](static/step_5_glue_goold_succeeded_2.png)
 - Con el job en Succeeded y las particiones por año visibles en silver/, se evidencia que la limpieza y el tipado funcionaron correctamente.
 
 ### Step 6 — Job Silver → Gold completado (modelo estrella)
 ![Job Silver a Gold con estado Succeeded](evidence/step_6_glue_gold_succeeded_1.png)
+![Job Silver a Gold con estado Succeeded](evidence/step_6_glue_gold_succeeded_2.png)
 - Con las cuatro tablas escritas en gold/, se evidencia que el modelo estrella quedó construido y listo para consultarse.
+
+### Paso 7 — Orquestación con Step Functions
+![Pipeline orquestado con ambos estados completados](evidence/step_7_step_functions_1.png)
+![Pipeline orquestado con ambos estados completados](evidence/step_7_step_functions_2.png)
+- Con ambos estados en verde, se evidencia que el pipeline completo corre de forma orquestada, sin intervención manual entre un job y el otro.
