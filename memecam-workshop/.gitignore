@@ -1,0 +1,13 @@
+# Entorno virtual
+venv/
+
+# Cache de Python
+__pycache__/
+*.pyc
+
+# Zips de despliegue generados localmente
+*.zip
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

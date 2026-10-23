@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MemeCam · Congreso CIETA XVIII</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Identidad: índigo + violeta sobre base slate (modo oscuro) */
+      --bg: #0d0f17;
+      --sidebar: #12141c;
+      --card: #161922;
+      --card-2: #1d2130;
+      --line: #262a38;
+      --text: #e8eaf0;
+      --muted: #9097ab;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --primary-soft: rgba(99, 102, 241, 0.16);
+      --accent: #a78bfa;
+      --accent-soft: rgba(167, 139, 250, 0.16);
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --error: #f87171;
+      --radius: 14px;
+      --font-sans: "Geist", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+    }
+    code, pre { font-family: var(--font-mono); }
+
+    /* ---------- Marquesina ---------- */
+    .marquee {
+      overflow: hidden;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .marquee-track {
+      display: inline-flex;
+      gap: 48px;
+      padding: 8px 0;
+      animation: scroll 28s linear infinite;
+    }
+    .marquee-track span::after { content: "✦"; margin-left: 48px; opacity: 0.7; }
+    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--sidebar);
+    }
+    h1 { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+    h1 span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .pill {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+    .pill.cloud { color: var(--primary-hover); border-color: var(--primary); background: var(--primary-soft); }
+    .pill.local { color: var(--muted); }
+    .ghost {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 7px 12px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+    }
+    .ghost:hover { color: var(--text); border-color: var(--muted); }
+    .ghost.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+    /* ---------- Layout del boceto ---------- */
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) 1fr;
+      grid-template-areas:
+        "side gestures"
+        "side bottom";
+      grid-template-rows: auto 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .side { grid-area: side; display: grid; gap: 16px; }
+    .gestures-panel { grid-area: gestures; }
+    .bottom { grid-area: bottom; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; grid-template-areas: "side" "gestures" "bottom"; }
+      .bottom { grid-template-columns: 1fr; }
+      header { flex-wrap: wrap; }
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .section { padding: 18px; }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ---------- Cámara ---------- */
+    .camera { position: relative; aspect-ratio: 4 / 3; background: #07080d; }
+    .camera video, .camera canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* efecto espejo */
+    }
+    .start-wrap {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      z-index: 2;
+    }
+    .primary-btn {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .primary-btn:hover { background: var(--primary-hover); }
+    .primary-btn:disabled { opacity: 0.6; cursor: wait; }
+    #start[hidden] { display: none; }
+    .countdown {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 6rem;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .countdown[hidden] { display: none; }
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .flash.go { animation: flash 0.45s ease-out; }
+    @keyframes flash { from { opacity: 0.9; } to { opacity: 0; } }
+    .status-bar { padding: 10px 14px; border-top: 1px solid var(--line); }
+    #status { color: var(--muted); font-size: 0.85rem; margin: 0; line-height: 1.4; }
+
+    /* ---------- Meme ---------- */
+    .meme {
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      position: relative;
+      background: #07080d;
+    }
+    .meme img { width: 100%; height: 100%; object-fit: contain; }
+    .meme img.pop { animation: pop 0.35s cubic-bezier(.2, 1.6, .4, 1); }
+    @keyframes pop { from { transform: scale(0.6) rotate(-4deg); opacity: 0; } to { transform: none; opacity: 1; } }
+    #meme-empty { font-size: 3.5rem; opacity: 0.5; }
+    .meme-label {
+      position: absolute;
+      left: 10px;
+      bottom: 10px;
+      background: rgba(13, 15, 23, 0.85);
+      border: 1px solid var(--line);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    /* ---------- Captura ---------- */
+    .capture-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .capture-actions .primary-btn { flex: 1; }
+    .note { color: var(--muted); font-size: 0.83rem; line-height: 1.5; margin: 10px 0 0; }
+    .note b { color: var(--text); }
+
+    /* ---------- Gestos ---------- */
+    .gestures {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 560px) { .gestures { grid-template-columns: repeat(2, 1fr); } }
+    .gesture {
+      background: var(--card-2);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 10px;
+      display: grid;
+      gap: 4px;
+      align-content: start;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .gesture.active { border-color: var(--primary); transform: translateY(-3px); background: var(--primary-soft); }
+    .gesture .thumb {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #07080d;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+    .gesture .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center 65%; }
+    .gesture[data-id="head_back"] .thumb img { object-position: center 88%; }
+    .gesture strong { font-size: 0.85rem; }
+    .gesture span { font-size: 0.75rem; color: var(--muted); line-height: 1.3; }
+    .gesture .change {
+      margin-top: 6px;
+      background: none;
+      border: 1px dashed var(--line);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 5px;
+      font: inherit;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .gesture .change:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ---------- Ranking ---------- */
+    .ranking-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .counter { color: var(--muted); font-size: 0.82rem; font-family: var(--font-mono); }
+    #ranking { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    #ranking li { display: grid; grid-template-columns: minmax(150px, 1.2fr) 1fr 28px; gap: 10px; align-items: center; font-size: 0.84rem; }
+    #ranking li span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #ranking .bar { height: 10px; background: var(--card-2); border-radius: 999px; overflow: hidden; }
+    #ranking .bar div {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 999px;
+      transition: width 0.4s;
+    }
+    #ranking b { text-align: right; font-family: var(--font-mono); font-weight: 500; }
+
+    /* ---------- Capturas ---------- */
+    .captures-actions { display: flex; align-items: center; gap: 10px; }
+    .mini {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font: inherit;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .mini:hover { color: var(--text); border-color: var(--muted); }
+    .mini.danger { color: var(--error); border-color: var(--error); }
+    .mini:disabled { opacity: 0.4; cursor: default; }
+    .mini[hidden] { display: none; }
+    #captures {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .capture-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      transition: border-color 0.15s;
+    }
+    .capture-item:hover { border-color: var(--accent); }
+    .capture-item a { display: block; }
+    .capture-item img { width: 100%; display: block; }
+    .capture-item .delete {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 0;
+      background: rgba(13, 15, 23, 0.85);
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .capture-item:hover .delete, .capture-item .delete:focus-visible { opacity: 1; }
+    .capture-item .delete:hover { background: var(--error); color: #fff; }
+    @media (hover: none) { .capture-item .delete { opacity: 1; } }
+    .pager {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pager[hidden] { display: none; }
+    #page-info { color: var(--muted); font-size: 0.8rem; font-family: var(--font-mono); }
+    #captures-empty { margin: 0; }
+
+    /* ---------- Debug ---------- */
+    #debug pre {
+      margin: 0 0 12px;
+      background: #07080d;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.76rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      padding: 12px 18px;
+      border-radius: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      max-width: calc(100% - 32px);
+      z-index: 10;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--error); color: var(--error); }
+  </style>
+</head>
+<body>
+  <div class="marquee" aria-label="Congreso CIETA XVIII - 2026">
+    <div class="marquee-track" aria-hidden="true">
+      <span>Congreso CIETA XVIII - 2026</span><span>Congreso CIETA XVIII - 2026</span>
+      <span>Congreso CIETA XVIII - 2026</span><span>Congreso CIETA XVIII - 2026</span>
+      <span>Congreso CIETA XVIII - 2026</span><span>Congreso CIETA XVIII - 2026</span>
+      <span>Congreso CIETA XVIII - 2026</span><span>Congreso CIETA XVIII - 2026</span>
+    </div>
+  </div>
+
+  <header>
+    <h1>Meme<span>Cam</span></h1>
+    <div class="header-right">
+      <span id="mode" class="pill"></span>
+      <button id="debug-toggle" class="ghost" type="button">Debug</button>
+    </div>
+  </header>
+
+  <main>
+    <aside class="side">
+      <div class="panel">
+        <div class="camera">
+          <video id="video" playsinline muted></video>
+          <canvas id="overlay"></canvas>
+          <div id="countdown" class="countdown" hidden></div>
+          <div id="flash" class="flash"></div>
+          <div class="start-wrap">
+            <button id="start" class="primary-btn" type="button">Activar cámara</button>
+          </div>
+        </div>
+        <div class="status-bar"><p id="status">El video nunca sale de tu navegador: solo se envía el nombre del gesto.</p></div>
+      </div>
+
+      <div class="panel">
+        <div class="meme">
+          <img id="meme-img" alt="Meme del gesto detectado" crossorigin="anonymous" hidden>
+          <div id="meme-empty">👀</div>
+          <div id="meme-label" class="meme-label">Haz un gesto</div>
+        </div>
+      </div>
+
+      <div class="panel section">
+        <h2>Captura</h2>
+        <div class="capture-actions">
+          <button id="capture-btn" class="primary-btn" type="button">📸 Tomar captura</button>
+        </div>
+        <p class="note"><b>Guiña un ojo</b> para tomar una captura. Tienes 3 segundos para hacer tu gesto.</p>
+      </div>
+
+      <div id="debug" class="panel section" hidden>
+        <h2>Debug</h2>
+        <pre id="debug-values">Activa la cámara para ver los valores.</pre>
+        <button id="calibrate" class="ghost" type="button">Recalibrar pose neutral</button>
+        <p class="note">Si un gesto se dispara de más o de menos, ajusta su umbral en <code>CONFIG</code> dentro de <code>gestures.js</code>.</p>
+      </div>
+    </aside>
+
+    <section class="panel section gestures-panel">
+      <h2>Gestos</h2>
+      <div id="gestures" class="gestures"></div>
+    </section>
+
+    <section class="bottom">
+      <div class="panel section">
+        <div class="ranking-head">
+          <h2>Ranking del salón</h2>
+          <span id="total" class="counter"></span>
+        </div>
+        <ol id="ranking"></ol>
+      </div>
+
+      <div class="panel section">
+        <div class="ranking-head">
+          <h2>Capturas</h2>
+          <div class="captures-actions">
+            <span id="captures-count" class="counter"></span>
+            <button id="clear-captures" class="mini" type="button" hidden>Vaciar</button>
+          </div>
+        </div>
+        <div id="captures"></div>
+        <div id="pager" class="pager" hidden>
+          <button id="prev-page" class="mini" type="button">‹ Anterior</button>
+          <span id="page-info"></span>
+          <button id="next-page" class="mini" type="button">Siguiente ›</button>
+        </div>
+        <p id="captures-empty" class="note">Tus capturas aparecen aquí. Haz clic en una para descargarla.</p>
+      </div>
+    </section>
+  </main>
+
+  <input id="file-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

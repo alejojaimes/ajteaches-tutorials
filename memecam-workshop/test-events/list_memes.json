@@ -1,0 +1,6 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /memes",
+  "rawPath": "/memes",
+  "isBase64Encoded": false
+}

@@ -1,0 +1,6 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /stats",
+  "rawPath": "/stats",
+  "isBase64Encoded": false
+}

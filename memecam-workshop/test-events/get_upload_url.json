@@ -1,0 +1,8 @@
+{
+  "version": "2.0",
+  "routeKey": "POST /memes/upload-url",
+  "rawPath": "/memes/upload-url",
+  "headers": { "content-type": "application/json" },
+  "body": "{\"gestureId\": \"smile\", \"contentType\": \"image/png\"}",
+  "isBase64Encoded": false
+}
